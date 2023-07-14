@@ -29,23 +29,46 @@ class Spaceship:
         self.move_up()
       elif user_input[pygame.K_DOWN]:
         self.move_down()
-
-    def move_left(self):
-      if self.rect.left > 0:
-        self.rect.x -= self.SPACESHIP_SPEED     
     
-    def move_right(self):
-      if self.rect.right < SCREEN_WIDTH:
-        self.rect.x += self.SPACESHIP_SPEED
-   
-    def move_up(self):
-      if self.rect.y > SCREEN_HEIGHT // 2:
+    def update(self, keys):
+      if keys[pygame.K_UP] and keys[pygame.K_RIGHT]:
+        # Mover la nave en diagonal hacia arriba a la derecha
+        self.rect.x += self.SPACESHIP_SPEED 
         self.rect.y -= self.SPACESHIP_SPEED
-    
-    def move_down(self):
-      if self.rect.y < SCREEN_WIDTH - self.SPACESHIP_HEIGT:  
-        self.rect.y += self.SPACESHIP_SPEED
+      elif keys[pygame.K_UP] and keys[pygame.K_LEFT]:
+        # Mover la nave en diagonal hacia arriba a la izquierda
+        self.rect.x -= self.SPACESHIP_SPEED 
+        self.rect.y -= self.SPACESHIP_SPEED 
+      elif keys[pygame.K_DOWN] and keys[pygame.K_RIGHT]:
+        # Mover la nave en diagonal hacia abajo a la derecha
+        self.rect.x += self.SPACESHIP_SPEED 
+        self.rect.y += self.SPACESHIP_SPEED 
+      elif keys[pygame.K_DOWN] and keys[pygame.K_LEFT]:
+        # Mover la nave en diagonal hacia abajo a la izquierda
+        self.rect.x -= self.SPACESHIP_SPEED 
+        self.rect.y += self.SPACESHIP_SPEED 
+      else:  
+         if keys[pygame.K_UP]:
+            if self.rect.y > 0:
+                if self.rect.y > SCREEN_HEIGHT // 2:
+                    self.rect.y -= self.SPACESHIP_SPEED 
 
+         if keys[pygame.K_DOWN]:
+            if self.rect.y < SCREEN_HEIGHT - self.SPACESHIP_HEIGT:
+                self.rect.y += self.SPACESHIP_SPEED 
+
+         if keys[pygame.K_LEFT]:
+            if self.rect.x > 0:
+               self.rect.x -= self.SPACESHIP_SPEED 
+            else:
+               self.rect.x = SCREEN_WIDTH - self.SPACESHIP_WIDTH   
+
+         if keys[pygame.K_RIGHT]:
+            if self.rect.x < SCREEN_WIDTH - self.SPACESHIP_WIDTH:
+                    self.rect.x += self.SPACESHIP_SPEED 
+
+            else:
+                    self.rect.x = 0    
 
     def draw(self, screen):
         screen.blit(self.image, (self.rect.x, self.rect.y))
