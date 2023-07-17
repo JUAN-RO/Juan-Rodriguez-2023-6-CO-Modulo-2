@@ -16,7 +16,10 @@ class EnemyManager:
 
     def add_enemy(self):
         if len(self.enemies) < 100:
-            enemy = Enemy()
-            self.enemies.append(enemy)
+            enemy1 = Enemy('game/assets/Enemy/enemy_1.png', enemy_type=1)  # Primero enemigo con apariencia original
+            enemy2 = Enemy('game/assets/Enemy/enemy_2.png', enemy_type=2) 
+            self.enemies.append(enemy1)
+            self.enemies.append(enemy2)
+
 
         
