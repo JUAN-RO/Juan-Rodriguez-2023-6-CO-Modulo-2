@@ -1,7 +1,8 @@
 from game.components.enemies.enemy2 import Enemy2, Enemy  # Importa la nueva clase Enemy2
 
 class EnemyManager:
-    def __init__(self):
+    def __init__(self, player):
+        self.player = player
         self.enemies = []
 
     def update(self, bullet_manager):
@@ -15,7 +16,7 @@ class EnemyManager:
             enemy.draw(screen)
 
     def add_enemy(self):
-        if len(self.enemies) < 100:
+        if len(self.enemies) < 1:
             enemy1 = Enemy('game/assets/Enemy/enemy_1.png', enemy_type=1)
             enemy2 = Enemy2('game/assets/Enemy/enemy_2.png', enemy_type=2)  # Crea un nuevo enemigo tipo 2
             self.enemies.append(enemy1)

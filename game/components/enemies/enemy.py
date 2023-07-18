@@ -35,6 +35,8 @@ class Enemy(Sprite):
         self.enemy_type = enemy_type
         self.type = 'enemy'
         self.shooting_time = random.randint(self.INITIAL_SHOOTING_TIME, self.FINAL_SHOOTING_TIME)
+        self.hit_count = 0  # Contador de balas impactadas en enemigos tipo 2
+
 
     def update(self, ships, bullet_manager):
         self.rect.y += self.SPEED_Y
@@ -76,5 +78,3 @@ class Enemy(Sprite):
             bullet = Bullet(self)
             bullet_manger.add_bullet(bullet)
             self.shooting_time += random.randint(self.INITIAL_SHOOTING_TIME, self.FINAL_SHOOTING_TIME)
-
-    

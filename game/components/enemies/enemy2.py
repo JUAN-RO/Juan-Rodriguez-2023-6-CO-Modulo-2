@@ -30,3 +30,7 @@ class Enemy2(Enemy):
 
         # Calcula el desplazamiento vertical utilizando la función sinusoidal
         self.rect.y += amplitude * math.sin(frequency * self.rect.x)
+
+         # Si el enemigo desciende más allá de la parte inferior de la pantalla o alcanza el hit_count, lo eliminamos
+        if self.rect.bottom <= 0 or self.hit_count >= 5:
+            self.kill()  # Usamos el método kill() para eliminar al enemigo
