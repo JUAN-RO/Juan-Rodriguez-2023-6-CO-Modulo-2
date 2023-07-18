@@ -2,7 +2,9 @@ import math
 import pygame
 import random
 from pygame.sprite import Sprite
-from game.utils.constants import ENEMY_1, ENEMY_2, SCREEN_WIDTH, SCREEN_HEIGHT
+from game.components.bullets import bullet_manager
+from game.components.bullets.bullet import Bullet
+from game.utils.constants import ENEMY_1, SCREEN_WIDTH, SCREEN_HEIGHT
 
 class Enemy(Sprite):
     ENEMY_WIDTH = 40
@@ -14,6 +16,9 @@ class Enemy(Sprite):
     SPEED_Y = 1
 
     MOV_X = {0: 'left', 1: 'right'}
+
+    INITIAL_SHOOTING_TIME = 2000
+    FINAL_SHOOTING_TIME = 4000
 
     def __init__(self, image_path, enemy_type):
         self.image = pygame.image.load(image_path)
@@ -28,9 +33,12 @@ class Enemy(Sprite):
         self.index = 0
         self.angle = 0.0
         self.enemy_type = enemy_type
+        self.type = 'enemy'
+        self.shooting_time = random.randint(self.INITIAL_SHOOTING_TIME, self.FINAL_SHOOTING_TIME)
 
-    def update(self, ships):
+    def update(self, ships, bullet_manager):
         self.rect.y += self.SPEED_Y
+        self.shoot(bullet_manager)
 
         if self.enemy_type == 1:
             self.update_type1()
@@ -47,31 +55,6 @@ class Enemy(Sprite):
         else:
             self.rect.x += self.SPEED_X
             self.change_movement_x()
-
-    def update_type2(self):
-        # Movimiento sinusoidal mientras el enemigo desciende.
-        amplitude = 10  # Amplitud de la oscilación
-        frequency = 0.10  # Frecuencia de la oscilación
-
-        # Movimiento horizontal en dirección opuesta al enemigo tipo 1
-        if self.movement_x == 'left':
-            self.rect.x -= self.SPEED_X
-            if self.rect.left <= 0:
-                self.movement_x = 'right'
-        else:
-            self.rect.x += self.SPEED_X
-            if self.rect.right >= SCREEN_WIDTH:
-                self.movement_x = 'left'
-
-        # Calcula el desplazamiento vertical utilizando la función sinusoidal
-        self.rect.y += self.SPEED_Y * 1  # Incremento de la velocidad vertical
-
-        # Si el enemigo desciende más allá de la parte inferior de la pantalla, reiniciamos su posición en la parte superior
-        if self.rect.top >= SCREEN_HEIGHT:
-            self.rect.y = -self.ENEMY_HEIGHT
-
-        # Calcula el desplazamiento vertical utilizando la función sinusoidal
-        self.rect.y += amplitude * math.sin(frequency * self.rect.x)
        
             
     def draw(self, screen):
@@ -85,3 +68,13 @@ class Enemy(Sprite):
         elif (self.index >= self.movement_x_for and self.movement_x == 'left') or (self.rect.x <= self.ENEMY_WIDTH):
             self.movement_x = 'right'
             self.index = 0
+
+
+    def shoot(self, bullet_manger):
+        current_time = pygame.time.get_ticks()
+        if self.shooting_time <= current_time:
+            bullet = Bullet(self)
+            bullet_manger.add_bullet(bullet)
+            self.shooting_time += random.randint(self.INITIAL_SHOOTING_TIME, self.FINAL_SHOOTING_TIME)
+
+    
