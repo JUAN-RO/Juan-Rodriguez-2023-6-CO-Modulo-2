@@ -19,8 +19,11 @@ class BulletManager:
         for bullet in self.enemy_bullets:
             bullet.update(self.enemy_bullets)
 
+
+
             if bullet.rect.colliderect(game.player.rect) and bullet.owner == 'enemy':
                 self.enemy_bullets.remove(bullet)
+                game.death_count += 1
                 game.playing = False
                 pygame.time.delay(1000)
                 break
@@ -32,12 +35,11 @@ class BulletManager:
             bullet.rect.y += self.SPEED
 
         # Verificar colisiones entre balas del jugador y enemigos
-        for bullet in self.player_bullets:
-            bullet.update(self.player_bullets)
 
             # Colisionar con enemigos tipo 1
             for enemy in self.enemy_manager.enemies:
                 if bullet.rect.colliderect(enemy.rect) and enemy.enemy_type == 1:
+                    enemy.decrease_hitpoints(game)
                     self.player_bullets.remove(bullet)
                     self.enemy_manager.enemies.remove(enemy)
 
@@ -62,3 +64,8 @@ class BulletManager:
             self.enemy_bullets.append(bullet)
         elif bullet.owner == 'player':
             self.player_bullets.append(bullet)
+
+
+    def reset(self):
+        self.player_bullets = []
+        self.ene_bullets = []

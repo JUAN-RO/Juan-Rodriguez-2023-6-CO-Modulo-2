@@ -36,7 +36,7 @@ class Enemy(Sprite):
         self.type = 'enemy'
         self.shooting_time = random.randint(self.INITIAL_SHOOTING_TIME, self.FINAL_SHOOTING_TIME)
         self.hit_count = 0  # Contador de balas impactadas en enemigos tipo 2
-
+        self.hitpoints = 4
 
     def update(self, ships, bullet_manager):
         self.rect.y += self.SPEED_Y
@@ -78,3 +78,9 @@ class Enemy(Sprite):
             bullet = Bullet(self)
             bullet_manger.add_bullet(bullet)
             self.shooting_time += random.randint(self.INITIAL_SHOOTING_TIME, self.FINAL_SHOOTING_TIME)
+
+    def decrease_hitpoints(self, game):
+        self.hitpoints -= 1
+        if self.hitpoints <= 0:
+            game.score += 1
+            game.enemy_manager.enemies.remove(self)

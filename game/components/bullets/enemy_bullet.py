@@ -32,4 +32,4 @@ class EnemyBullet(pygame.sprite.Sprite):
 
         # Eliminar la bala si sale de la pantalla
         if self.rect.bottom < 0 or self.rect.top > SCREEN_HEIGHT or self.rect.right < 0 or self.rect.left > SCREEN_WIDTH:
-            self.kill()
+            self.enemy_bullets.remove()

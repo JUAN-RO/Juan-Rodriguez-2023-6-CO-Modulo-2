@@ -1,4 +1,5 @@
 import math
+from game.components.bullets import bullet_manager
 from game.components.enemies.enemy import Enemy
 from game.utils.constants import SCREEN_WIDTH, SCREEN_HEIGHT
 
@@ -31,6 +32,11 @@ class Enemy2(Enemy):
         # Calcula el desplazamiento vertical utilizando la función sinusoidal
         self.rect.y += amplitude * math.sin(frequency * self.rect.x)
 
+        # Llamamos al método shoot() para que el enemigo tipo 2 dispare balas
+        self.shoot(bullet_manager)
+
          # Si el enemigo desciende más allá de la parte inferior de la pantalla o alcanza el hit_count, lo eliminamos
         if self.rect.bottom <= 0 or self.hit_count >= 5:
-            self.kill()  # Usamos el método kill() para eliminar al enemigo
+            self.enemy_bullets.remove(Enemy2)
+
+    
