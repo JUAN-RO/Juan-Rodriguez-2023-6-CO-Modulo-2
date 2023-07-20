@@ -1,71 +1,43 @@
 import pygame
-from game.components import game
-from game.utils.constants import BULLET, BULLET_ENEMY, SCREEN_HEIGHT
+
 
 class BulletManager:
-    PLAYER_SPEED = -20
+  def __init__(self):
+    self.player_bullets = []
+    self.enemy_bullets = []
+    
+  def update(self, game):
+    for bullet in self.enemy_bullets:
+      bullet.update(self.enemy_bullets)
+      
+      if bullet.rect.colliderect(game.player.rect) and bullet.owner == 'enemy':
+        self.enemy_bullets.remove(bullet)
+        game.death_count.update()
+        game.leader_board.update(game.score.count)
+        game.playing = False
+        pygame.time.delay(1000)
+        break
 
-    def __init__(self, spaceship, enemy_manager):
-        self.player_bullets = []
-        self.enemy_bullets = []
-        if spaceship.type == 'player':
-            self.SPEED = -20
-        self.enemy_manager = enemy_manager  # Guardamos la referencia al EnemyManager
+    for bullet in self.player_bullets:
+      bullet.update(self.player_bullets)
 
-        if spaceship.type == 'player':
-            self.SPEED = self.PLAYER_SPEED
-
-    def update(self, game):
-        for bullet in self.enemy_bullets:
-            bullet.update(self.enemy_bullets)
-
-
-
-            if bullet.rect.colliderect(game.player.rect) and bullet.owner == 'enemy':
-                self.enemy_bullets.remove(bullet)
-                game.death_count += 1
-                game.playing = False
-                pygame.time.delay(1000)
-                break
-
-        for bullet in self.player_bullets:
-            bullet.update(self.player_bullets)
-
-            # Modifique la coordenada Y de la viñeta del jugador para que se mueva hacia arriba
-            bullet.rect.y += self.SPEED
-
-        # Verificar colisiones entre balas del jugador y enemigos
-
-            # Colisionar con enemigos tipo 1
-            for enemy in self.enemy_manager.enemies:
-                if bullet.rect.colliderect(enemy.rect) and enemy.enemy_type == 1:
-                    enemy.decrease_hitpoints(game)
-                    self.player_bullets.remove(bullet)
-                    self.enemy_manager.enemies.remove(enemy)
-
-            # Colisionar con enemigos tipo 2
-            for enemy in self.enemy_manager.enemies:
-                if bullet.rect.colliderect(enemy.rect) and enemy.enemy_type == 2:
-                    self.player_bullets.remove(bullet)
-                    enemy.hit_count += 1
-                    if enemy.hit_count >= 4:
-                        self.enemy_manager.enemies.remove(enemy)
-
-    def draw(self, screen):
-        for bullet in self.player_bullets:
-            bullet.draw(screen)
-
-        for bullet in self.enemy_bullets:
-            bullet.draw(screen)
-
-
-    def add_bullet(self, bullet):
-        if bullet.owner == 'enemy' and len(self.enemy_bullets) < 1:
-            self.enemy_bullets.append(bullet)
-        elif bullet.owner == 'player':
-            self.player_bullets.append(bullet)
-
-
-    def reset(self):
-        self.player_bullets = []
-        self.ene_bullets = []
+      for enemy in game.enemy_manager.enemies:
+        if bullet.rect.colliderect(enemy.rect) and bullet.owner == 'player':
+            enemy.decrease_hitpoints(game)
+            self.player_bullets.remove(bullet)
+  
+  def draw(self, screen):
+    for bullet in self.enemy_bullets:
+      bullet.draw(screen)
+    for bullet in self.player_bullets:
+      bullet.draw(screen)
+      
+  def add_bullet(self, bullet):
+    if bullet.owner == 'enemy':
+      self.enemy_bullets.append(bullet)
+    elif bullet.owner == 'player' and len(self.player_bullets) < 3:
+      self.player_bullets.append(bullet)
+      
+  def reset(self):
+    self.player_bullets = []
+    self.enemy_bullets = []
